@@ -1,0 +1,246 @@
+<%- include('../layout', { 
+    title: 'Songs - TuneForge',
+    bodyClass: 'songs-page',
+    additionalHead: '<style>
+            .songs-page {
+                background: var(--bg-secondary);
+                min-height: calc(100vh - 70px);
+                padding: 2rem 0;
+            }
+            
+            .songs-container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 1rem;
+            }
+            
+            .songs-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 2rem;
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+            
+            .songs-title {
+                font-size: 2rem;
+                font-weight: 700;
+                color: var(--text-primary);
+            }
+            
+            .songs-filters {
+                display: flex;
+                gap: 1rem;
+                flex-wrap: wrap;
+            }
+            
+            .filter-select {
+                padding: 0.5rem 1rem;
+                border: 1px solid var(--border-color);
+                border-radius: var(--radius-md);
+                background: var(--bg-primary);
+                color: var(--text-primary);
+                font-size: 0.875rem;
+            }
+            
+            .songs-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 1.5rem;
+                margin-bottom: 2rem;
+            }
+            
+            .pagination {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 0.5rem;
+                margin-top: 2rem;
+            }
+            
+            .pagination-btn {
+                padding: 0.5rem 1rem;
+                border: 1px solid var(--border-color);
+                border-radius: var(--radius-md);
+                background: var(--bg-primary);
+                color: var(--text-primary);
+                text-decoration: none;
+                transition: var(--transition-fast);
+            }
+            
+            .pagination-btn:hover {
+                background: var(--primary-color);
+                color: white;
+                border-color: var(--primary-color);
+            }
+            
+            .pagination-btn.active {
+                background: var(--primary-color);
+                color: white;
+                border-color: var(--primary-color);
+            }
+            
+            .pagination-btn:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+            
+            .empty-state {
+                text-align: center;
+                padding: 4rem 2rem;
+                color: var(--text-secondary);
+            }
+            
+            .empty-state i {
+                font-size: 4rem;
+                margin-bottom: 1rem;
+                opacity: 0.5;
+            }
+            
+            .empty-state h3 {
+                font-size: 1.5rem;
+                margin-bottom: 0.5rem;
+                color: var(--text-primary);
+            }
+            
+            .empty-state p {
+                margin-bottom: 2rem;
+            }
+        </style>'
+}) %>
+
+<div class="songs-container">
+    <div class="songs-header">
+        <h1 class="songs-title">All Songs</h1>
+        <div class="songs-filters">
+            <select class="filter-select" id="genreFilter">
+                <option value="">All Genres</option>
+                <option value="pop">Pop</option>
+                <option value="rock">Rock</option>
+                <option value="hip-hop">Hip-Hop</option>
+                <option value="jazz">Jazz</option>
+                <option value="classical">Classical</option>
+                <option value="electronic">Electronic</option>
+                <option value="country">Country</option>
+                <option value="blues">Blues</option>
+                <option value="reggae">Reggae</option>
+                <option value="folk">Folk</option>
+                <option value="other">Other</option>
+            </select>
+            
+            <select class="filter-select" id="sortFilter">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="popular">Most Popular</option>
+                <option value="title">Title A-Z</option>
+                <option value="artist">Artist A-Z</option>
+            </select>
+        </div>
+    </div>
+    
+    <% if (typeof songs !== 'undefined' && songs.length > 0) { %>
+        <div class="songs-grid" id="songsGrid">
+            <% songs.forEach(function(song) { %>
+                <div class="song-card">
+                    <div class="song-cover">
+                        <img src="<%= song.coverArt || '/images/default-album-cover.png' %>" alt="<%= song.title %>">
+                        <div class="play-overlay">
+                            <button class="play-btn" data-song-id="<%= song._id %>">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="song-info">
+                        <h4 class="song-title"><%= song.title %></h4>
+                        <p class="song-artist"><%= song.artist %></p>
+                        <div class="song-stats">
+                            <span class="play-count">
+                                <i class="fas fa-play"></i>
+                                <%= song.playCount || 0 %>
+                            </span>
+                            <% if (song.isPremium) { %>
+                                <span class="premium-badge">
+                                    <i class="fas fa-crown"></i>
+                                    Premium
+                                </span>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+        
+        <% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
+            <div class="pagination">
+                <% if (typeof currentPage !== 'undefined' && currentPage > 1) { %>
+                    <a href="?page=<%= currentPage - 1 %>" class="pagination-btn">Previous</a>
+                <% } %>
+                
+                <% for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) { %>
+                    <a href="?page=<%= i %>" class="pagination-btn <%= i === currentPage ? 'active' : '' %>">
+                        <%= i %>
+                    </a>
+                <% } %>
+                
+                <% if (typeof currentPage !== 'undefined' && currentPage < totalPages) { %>
+                    <a href="?page=<%= currentPage + 1 %>" class="pagination-btn">Next</a>
+                <% } %>
+            </div>
+        <% } %>
+    <% } else { %>
+        <div class="empty-state">
+            <i class="fas fa-music"></i>
+            <h3>No Songs Found</h3>
+            <p>We couldn't find any songs matching your criteria. Try adjusting your filters or check back later for new content.</p>
+            <a href="/songs" class="btn btn-primary">View All Songs</a>
+        </div>
+    <% } %>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle play button clicks
+    document.querySelectorAll('.play-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const songId = this.getAttribute('data-song-id');
+            if (songId && window.TuneForge && window.TuneForge.playSong) {
+                window.TuneForge.playSong(songId);
+            }
+        });
+    });
+    
+    // Handle filter changes
+    const genreFilter = document.getElementById('genreFilter');
+    const sortFilter = document.getElementById('sortFilter');
+    
+    if (genreFilter) {
+        genreFilter.addEventListener('change', applyFilters);
+    }
+    
+    if (sortFilter) {
+        sortFilter.addEventListener('change', applyFilters);
+    }
+    
+    function applyFilters() {
+        const genre = genreFilter ? genreFilter.value : '';
+        const sort = sortFilter ? sortFilter.value : '';
+        
+        const params = new URLSearchParams();
+        if (genre) params.append('genre', genre);
+        if (sort) params.append('sort', sort);
+        
+        const queryString = params.toString();
+        window.location.href = queryString ? `?${queryString}` : '/songs';
+    }
+    
+    // Set current filter values from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    if (genreFilter && urlParams.get('genre')) {
+        genreFilter.value = urlParams.get('genre');
+    }
+    if (sortFilter && urlParams.get('sort')) {
+        sortFilter.value = urlParams.get('sort');
+    }
+});
+</script>

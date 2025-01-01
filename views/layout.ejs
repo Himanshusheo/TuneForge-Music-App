@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title || 'TuneForge - Music Streaming Platform' %></title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Meta tags -->
+    <meta name="description" content="TuneForge - Full-Stack Music Streaming & Admin Platform. Stream your favorite music, create playlists, and discover new artists.">
+    <meta name="keywords" content="music, streaming, playlist, songs, artists, TuneForge">
+    <meta name="author" content="TuneForge Team">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="<%= title || 'TuneForge - Music Streaming Platform' %>">
+    <meta property="og:description" content="Stream your favorite music, create playlists, and discover new artists on TuneForge.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="<%= req.protocol %>://<%= req.get('host') %><%= req.originalUrl %>">
+    
+    <!-- Additional head content -->
+    <%- typeof additionalHead !== 'undefined' ? additionalHead : '' %>
+</head>
+<body class="<%= typeof bodyClass !== 'undefined' ? bodyClass : '' %>">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <!-- Logo -->
+            <div class="nav-logo">
+                <a href="/">
+                    <i class="fas fa-music"></i>
+                    <span>TuneForge</span>
+                </a>
+            </div>
+            
+            <!-- Search Bar -->
+            <div class="nav-search">
+                <form action="/songs/search" method="GET" class="search-form">
+                    <div class="search-input-group">
+                        <input type="text" name="q" placeholder="Search songs, artists, playlists..." 
+                               value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"
+                               class="search-input">
+                        <button type="submit" class="search-btn">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Navigation Links -->
+            <div class="nav-links">
+                <a href="/songs" class="nav-link">
+                    <i class="fas fa-music"></i>
+                    <span>Songs</span>
+                </a>
+                <a href="/playlists" class="nav-link">
+                    <i class="fas fa-list"></i>
+                    <span>Playlists</span>
+                </a>
+                <% if (typeof isLoggedIn !== 'undefined' && isLoggedIn) { %>
+                    <a href="/dashboard" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <% if (typeof isAdmin !== 'undefined' && isAdmin) { %>
+                        <a href="/admin" class="nav-link admin-link">
+                            <i class="fas fa-cog"></i>
+                            <span>Admin</span>
+                        </a>
+                    <% } %>
+                <% } %>
+            </div>
+            
+            <!-- User Menu -->
+            <div class="nav-user">
+                <% if (typeof isLoggedIn !== 'undefined' && isLoggedIn) { %>
+                    <div class="user-menu">
+                        <div class="user-avatar">
+                            <img src="<%= user.avatar || '/images/default-avatar.png' %>" alt="<%= user.firstName %>">
+                        </div>
+                        <div class="user-dropdown">
+                            <div class="user-info">
+                                <div class="user-name"><%= user.firstName %> <%= user.lastName %></div>
+                                <div class="user-username">@<%= user.username %></div>
+                                <% if (typeof isPremium !== 'undefined' && isPremium) { %>
+                                    <div class="user-subscription premium">
+                                        <i class="fas fa-crown"></i>
+                                        Premium
+                                    </div>
+                                <% } else { %>
+                                    <div class="user-subscription free">
+                                        <i class="fas fa-user"></i>
+                                        Free
+                                    </div>
+                                <% } %>
+                            </div>
+                            <div class="dropdown-menu">
+                                <a href="/auth/profile" class="dropdown-item">
+                                    <i class="fas fa-user"></i>
+                                    Profile
+                                </a>
+                                <a href="/playlists" class="dropdown-item">
+                                    <i class="fas fa-list"></i>
+                                    My Playlists
+                                </a>
+                                <a href="/subscription" class="dropdown-item">
+                                    <i class="fas fa-crown"></i>
+                                    Subscription
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <form action="/auth/logout" method="POST" class="logout-form">
+                                    <button type="submit" class="dropdown-item logout-btn">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                        Logout
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                <% } else { %>
+                    <div class="auth-buttons">
+                        <a href="/auth/login" class="btn btn-outline">Login</a>
+                        <a href="/auth/register" class="btn btn-primary">Sign Up</a>
+                    </div>
+                <% } %>
+            </div>
+            
+            <!-- Mobile Menu Toggle -->
+            <div class="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Flash Messages -->
+    <% if (typeof messages !== 'undefined') { %>
+        <% if (messages.success && messages.success.length > 0) { %>
+            <div class="flash-messages success">
+                <% messages.success.forEach(function(message) { %>
+                    <div class="flash-message">
+                        <i class="fas fa-check-circle"></i>
+                        <span><%= message %></span>
+                        <button class="flash-close">&times;</button>
+                    </div>
+                <% }); %>
+            </div>
+        <% } %>
+        <% if (messages.error && messages.error.length > 0) { %>
+            <div class="flash-messages error">
+                <% messages.error.forEach(function(message) { %>
+                    <div class="flash-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span><%= message %></span>
+                        <button class="flash-close">&times;</button>
+                    </div>
+                <% }); %>
+            </div>
+        <% } %>
+    <% } %>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Content will be included here -->
+    </main>
+    
+    <!-- Audio Player -->
+    <div class="audio-player" id="audioPlayer">
+        <div class="player-container">
+            <div class="player-info">
+                <div class="song-cover">
+                    <img id="playerCover" src="/images/default-album-cover.png" alt="Song Cover">
+                </div>
+                <div class="song-details">
+                    <div class="song-title" id="playerTitle">No song selected</div>
+                    <div class="song-artist" id="playerArtist">Select a song to play</div>
+                </div>
+            </div>
+            
+            <div class="player-controls">
+                <button class="control-btn" id="prevBtn">
+                    <i class="fas fa-step-backward"></i>
+                </button>
+                <button class="control-btn play-btn" id="playBtn">
+                    <i class="fas fa-play"></i>
+                </button>
+                <button class="control-btn" id="nextBtn">
+                    <i class="fas fa-step-forward"></i>
+                </button>
+            </div>
+            
+            <div class="player-progress">
+                <div class="progress-time" id="currentTime">0:00</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                    <input type="range" class="progress-slider" id="progressSlider" min="0" max="100" value="0">
+                </div>
+                <div class="progress-time" id="totalTime">0:00</div>
+            </div>
+            
+            <div class="player-options">
+                <button class="control-btn" id="shuffleBtn" title="Shuffle">
+                    <i class="fas fa-random"></i>
+                </button>
+                <button class="control-btn" id="repeatBtn" title="Repeat">
+                    <i class="fas fa-redo"></i>
+                </button>
+                <button class="control-btn" id="volumeBtn" title="Volume">
+                    <i class="fas fa-volume-up"></i>
+                </button>
+                <div class="volume-slider">
+                    <input type="range" class="volume-control" id="volumeSlider" min="0" max="100" value="80">
+                </div>
+                <button class="control-btn" id="queueBtn" title="Queue">
+                    <i class="fas fa-list"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Audio Element -->
+        <audio id="audioElement" preload="none"></audio>
+    </div>
+    
+    <!-- Queue Modal -->
+    <div class="modal" id="queueModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Play Queue</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="queue-list" id="queueList">
+                    <!-- Queue items will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>TuneForge</h4>
+                    <p>Your ultimate music streaming platform. Discover, create, and share your favorite music.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Music</h4>
+                    <ul>
+                        <li><a href="/songs">Browse Songs</a></li>
+                        <li><a href="/playlists">Playlists</a></li>
+                        <li><a href="/songs?sort=trending">Trending</a></li>
+                        <li><a href="/songs?sort=featured">Featured</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Account</h4>
+                    <ul>
+                        <% if (typeof isLoggedIn !== 'undefined' && isLoggedIn) { %>
+                            <li><a href="/auth/profile">Profile</a></li>
+                            <li><a href="/playlists">My Playlists</a></li>
+                            <li><a href="/subscription">Subscription</a></li>
+                        <% } else { %>
+                            <li><a href="/auth/login">Login</a></li>
+                            <li><a href="/auth/register">Sign Up</a></li>
+                        <% } %>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="/help">Help Center</a></li>
+                        <li><a href="/contact">Contact Us</a></li>
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                        <li><a href="/terms">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 TuneForge. All rights reserved. Built with ❤️ for music lovers.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script src="/js/main.js"></script>
+    <script src="/js/audio-player.js"></script>
+    <script src="/js/search.js"></script>
+    
+    <!-- Additional scripts -->
+    <%- typeof additionalScripts !== 'undefined' ? additionalScripts : '' %>
+</body>
+</html>

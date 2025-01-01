@@ -1,0 +1,315 @@
+<%- include('../layout', { 
+    title: 'Login - TuneForge',
+    bodyClass: 'auth-page',
+    additionalHead: '<style>
+            .auth-page {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 2rem 0;
+            }
+            
+            .auth-container {
+                background: white;
+                border-radius: 20px;
+                box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+                overflow: hidden;
+                width: 100%;
+                max-width: 400px;
+                margin: 0 1rem;
+            }
+            
+            .auth-header {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 2rem;
+                text-align: center;
+            }
+            
+            .auth-logo {
+                font-size: 2rem;
+                font-weight: 700;
+                margin-bottom: 0.5rem;
+            }
+            
+            .auth-subtitle {
+                opacity: 0.9;
+                font-size: 1rem;
+            }
+            
+            .auth-form {
+                padding: 2rem;
+            }
+            
+            .form-group {
+                margin-bottom: 1.5rem;
+            }
+            
+            .form-label {
+                display: block;
+                font-weight: 600;
+                color: #374151;
+                margin-bottom: 0.5rem;
+            }
+            
+            .form-input {
+                width: 100%;
+                padding: 0.75rem 1rem;
+                border: 2px solid #e5e7eb;
+                border-radius: 10px;
+                font-size: 1rem;
+                transition: all 0.3s ease;
+            }
+            
+            .form-input:focus {
+                outline: none;
+                border-color: #667eea;
+                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            }
+            
+            .form-error {
+                color: #ef4444;
+                font-size: 0.875rem;
+                margin-top: 0.25rem;
+            }
+            
+            .auth-button {
+                width: 100%;
+                padding: 0.875rem;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border: none;
+                border-radius: 10px;
+                font-size: 1rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                margin-bottom: 1rem;
+            }
+            
+            .auth-button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+            }
+            
+            .auth-links {
+                text-align: center;
+                margin-top: 1.5rem;
+            }
+            
+            .auth-link {
+                color: #667eea;
+                text-decoration: none;
+                font-weight: 500;
+            }
+            
+            .auth-link:hover {
+                text-decoration: underline;
+            }
+            
+            .divider {
+                text-align: center;
+                margin: 1.5rem 0;
+                position: relative;
+                color: #9ca3af;
+            }
+            
+            .divider::before {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background: #e5e7eb;
+                z-index: 1;
+            }
+            
+            .divider span {
+                background: white;
+                padding: 0 1rem;
+                position: relative;
+                z-index: 2;
+            }
+            
+            .social-login {
+                display: flex;
+                gap: 1rem;
+                margin-top: 1rem;
+            }
+            
+            .social-btn {
+                flex: 1;
+                padding: 0.75rem;
+                border: 2px solid #e5e7eb;
+                border-radius: 10px;
+                background: white;
+                color: #374151;
+                text-decoration: none;
+                text-align: center;
+                font-weight: 500;
+                transition: all 0.3s ease;
+            }
+            
+            .social-btn:hover {
+                border-color: #667eea;
+                color: #667eea;
+            }
+            
+            .error-message {
+                background: #fef2f2;
+                border: 1px solid #fecaca;
+                color: #dc2626;
+                padding: 0.75rem;
+                border-radius: 10px;
+                margin-bottom: 1rem;
+                font-size: 0.875rem;
+            }
+        </style>'
+}) %>
+
+<div class="auth-container">
+    <div class="auth-header">
+        <div class="auth-logo">
+            <i class="fas fa-music"></i>
+            TuneForge
+        </div>
+        <div class="auth-subtitle">Welcome back! Sign in to continue</div>
+    </div>
+    
+    <div class="auth-form">
+        <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+            <div class="error-message">
+                <i class="fas fa-exclamation-circle"></i>
+                <% errors.forEach(function(error) { %>
+                    <div><%= error.msg %></div>
+                <% }); %>
+            </div>
+        <% } %>
+        
+        <form action="/auth/login" method="POST">
+            <div class="form-group">
+                <label for="email" class="form-label">Email Address</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    class="form-input" 
+                    placeholder="Enter your email"
+                    value="<%= typeof formData !== 'undefined' ? formData.email || '' : '' %>"
+                    required
+                >
+            </div>
+            
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    class="form-input" 
+                    placeholder="Enter your password"
+                    required
+                >
+            </div>
+            
+            <div class="form-group">
+                <label class="flex items-center">
+                    <input type="checkbox" name="remember" class="mr-2">
+                    <span class="text-sm text-gray-600">Remember me</span>
+                </label>
+            </div>
+            
+            <button type="submit" class="auth-button">
+                <i class="fas fa-sign-in-alt mr-2"></i>
+                Sign In
+            </button>
+        </form>
+        
+        <div class="divider">
+            <span>or</span>
+        </div>
+        
+        <div class="social-login">
+            <a href="#" class="social-btn">
+                <i class="fab fa-google"></i>
+                Google
+            </a>
+            <a href="#" class="social-btn">
+                <i class="fab fa-facebook"></i>
+                Facebook
+            </a>
+        </div>
+        
+        <div class="auth-links">
+            <p class="text-sm text-gray-600">
+                Don't have an account? 
+                <a href="/auth/register" class="auth-link">Sign up here</a>
+            </p>
+            <p class="text-sm text-gray-600 mt-2">
+                <a href="/auth/forgot-password" class="auth-link">Forgot your password?</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Form validation
+    const form = document.querySelector('form');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    
+    form.addEventListener('submit', function(e) {
+        let isValid = true;
+        
+        // Clear previous errors
+        document.querySelectorAll('.form-error').forEach(error => error.remove());
+        
+        // Validate email
+        if (!emailInput.value.trim()) {
+            showFieldError(emailInput, 'Email is required');
+            isValid = false;
+        } else if (!isValidEmail(emailInput.value)) {
+            showFieldError(emailInput, 'Please enter a valid email address');
+            isValid = false;
+        }
+        
+        // Validate password
+        if (!passwordInput.value.trim()) {
+            showFieldError(passwordInput, 'Password is required');
+            isValid = false;
+        }
+        
+        if (!isValid) {
+            e.preventDefault();
+        }
+    });
+    
+    function showFieldError(field, message) {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'form-error';
+        errorDiv.textContent = message;
+        field.parentNode.appendChild(errorDiv);
+        field.style.borderColor = '#ef4444';
+    }
+    
+    function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+    
+    // Remove error styling on input
+    [emailInput, passwordInput].forEach(input => {
+        input.addEventListener('input', function() {
+            this.style.borderColor = '#e5e7eb';
+            const error = this.parentNode.querySelector('.form-error');
+            if (error) {
+                error.remove();
+            }
+        });
+    });
+});
+</script>

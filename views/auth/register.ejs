@@ -1,0 +1,438 @@
+<%- include('../layout', { 
+    title: 'Register - TuneForge',
+    bodyClass: 'auth-page',
+    additionalHead: '<style>
+            .auth-page {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 2rem 0;
+            }
+            
+            .auth-container {
+                background: white;
+                border-radius: 20px;
+                box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+                overflow: hidden;
+                width: 100%;
+                max-width: 450px;
+                margin: 0 1rem;
+            }
+            
+            .auth-header {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 2rem;
+                text-align: center;
+            }
+            
+            .auth-logo {
+                font-size: 2rem;
+                font-weight: 700;
+                margin-bottom: 0.5rem;
+            }
+            
+            .auth-subtitle {
+                opacity: 0.9;
+                font-size: 1rem;
+            }
+            
+            .auth-form {
+                padding: 2rem;
+            }
+            
+            .form-row {
+                display: flex;
+                gap: 1rem;
+            }
+            
+            .form-group {
+                margin-bottom: 1.5rem;
+            }
+            
+            .form-group.half {
+                flex: 1;
+            }
+            
+            .form-label {
+                display: block;
+                font-weight: 600;
+                color: #374151;
+                margin-bottom: 0.5rem;
+            }
+            
+            .form-input {
+                width: 100%;
+                padding: 0.75rem 1rem;
+                border: 2px solid #e5e7eb;
+                border-radius: 10px;
+                font-size: 1rem;
+                transition: all 0.3s ease;
+            }
+            
+            .form-input:focus {
+                outline: none;
+                border-color: #667eea;
+                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            }
+            
+            .form-error {
+                color: #ef4444;
+                font-size: 0.875rem;
+                margin-top: 0.25rem;
+            }
+            
+            .password-strength {
+                margin-top: 0.5rem;
+                font-size: 0.875rem;
+            }
+            
+            .strength-bar {
+                height: 4px;
+                background: #e5e7eb;
+                border-radius: 2px;
+                margin-top: 0.25rem;
+                overflow: hidden;
+            }
+            
+            .strength-fill {
+                height: 100%;
+                transition: all 0.3s ease;
+                border-radius: 2px;
+            }
+            
+            .strength-weak { background: #ef4444; width: 25%; }
+            .strength-fair { background: #f59e0b; width: 50%; }
+            .strength-good { background: #10b981; width: 75%; }
+            .strength-strong { background: #059669; width: 100%; }
+            
+            .auth-button {
+                width: 100%;
+                padding: 0.875rem;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border: none;
+                border-radius: 10px;
+                font-size: 1rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                margin-bottom: 1rem;
+            }
+            
+            .auth-button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+            }
+            
+            .auth-button:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+                transform: none;
+            }
+            
+            .auth-links {
+                text-align: center;
+                margin-top: 1.5rem;
+            }
+            
+            .auth-link {
+                color: #667eea;
+                text-decoration: none;
+                font-weight: 500;
+            }
+            
+            .auth-link:hover {
+                text-decoration: underline;
+            }
+            
+            .terms-text {
+                font-size: 0.875rem;
+                color: #6b7280;
+                text-align: center;
+                margin-top: 1rem;
+            }
+            
+            .error-message {
+                background: #fef2f2;
+                border: 1px solid #fecaca;
+                color: #dc2626;
+                padding: 0.75rem;
+                border-radius: 10px;
+                margin-bottom: 1rem;
+                font-size: 0.875rem;
+            }
+            
+            @media (max-width: 480px) {
+                .form-row {
+                    flex-direction: column;
+                    gap: 0;
+                }
+            }
+        </style>'
+}) %>
+
+<div class="auth-container">
+    <div class="auth-header">
+        <div class="auth-logo">
+            <i class="fas fa-music"></i>
+            TuneForge
+        </div>
+        <div class="auth-subtitle">Join the music revolution</div>
+    </div>
+    
+    <div class="auth-form">
+        <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+            <div class="error-message">
+                <i class="fas fa-exclamation-circle"></i>
+                <% errors.forEach(function(error) { %>
+                    <div><%= error.msg %></div>
+                <% }); %>
+            </div>
+        <% } %>
+        
+        <form action="/auth/register" method="POST" id="registerForm">
+            <div class="form-row">
+                <div class="form-group half">
+                    <label for="firstName" class="form-label">First Name</label>
+                    <input 
+                        type="text" 
+                        id="firstName" 
+                        name="firstName" 
+                        class="form-input" 
+                        placeholder="First name"
+                        value="<%= typeof formData !== 'undefined' ? formData.firstName || '' : '' %>"
+                        required
+                    >
+                </div>
+                
+                <div class="form-group half">
+                    <label for="lastName" class="form-label">Last Name</label>
+                    <input 
+                        type="text" 
+                        id="lastName" 
+                        name="lastName" 
+                        class="form-input" 
+                        placeholder="Last name"
+                        value="<%= typeof formData !== 'undefined' ? formData.lastName || '' : '' %>"
+                        required
+                    >
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="username" class="form-label">Username</label>
+                <input 
+                    type="text" 
+                    id="username" 
+                    name="username" 
+                    class="form-input" 
+                    placeholder="Choose a username"
+                    value="<%= typeof formData !== 'undefined' ? formData.username || '' : '' %>"
+                    required
+                >
+            </div>
+            
+            <div class="form-group">
+                <label for="email" class="form-label">Email Address</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    class="form-input" 
+                    placeholder="Enter your email"
+                    value="<%= typeof formData !== 'undefined' ? formData.email || '' : '' %>"
+                    required
+                >
+            </div>
+            
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    class="form-input" 
+                    placeholder="Create a password"
+                    required
+                >
+                <div class="password-strength" id="passwordStrength">
+                    <div class="strength-bar">
+                        <div class="strength-fill" id="strengthFill"></div>
+                    </div>
+                    <div id="strengthText">Password strength</div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirmPassword" class="form-label">Confirm Password</label>
+                <input 
+                    type="password" 
+                    id="confirmPassword" 
+                    name="confirmPassword" 
+                    class="form-input" 
+                    placeholder="Confirm your password"
+                    required
+                >
+            </div>
+            
+            <div class="form-group">
+                <label class="flex items-center">
+                    <input type="checkbox" name="agreeTerms" required class="mr-2">
+                    <span class="text-sm text-gray-600">
+                        I agree to the <a href="/terms" class="auth-link">Terms of Service</a> 
+                        and <a href="/privacy" class="auth-link">Privacy Policy</a>
+                    </span>
+                </label>
+            </div>
+            
+            <button type="submit" class="auth-button" id="submitBtn">
+                <i class="fas fa-user-plus mr-2"></i>
+                Create Account
+            </button>
+        </form>
+        
+        <div class="auth-links">
+            <p class="text-sm text-gray-600">
+                Already have an account? 
+                <a href="/auth/login" class="auth-link">Sign in here</a>
+            </p>
+        </div>
+        
+        <div class="terms-text">
+            By creating an account, you agree to receive updates about new features and music recommendations.
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('registerForm');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const strengthFill = document.getElementById('strengthFill');
+    const strengthText = document.getElementById('strengthText');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    // Password strength checker
+    passwordInput.addEventListener('input', function() {
+        const password = this.value;
+        const strength = checkPasswordStrength(password);
+        
+        strengthFill.className = 'strength-fill';
+        strengthFill.classList.add(strength.class);
+        strengthText.textContent = strength.text;
+    });
+    
+    // Form validation
+    form.addEventListener('submit', function(e) {
+        let isValid = true;
+        
+        // Clear previous errors
+        document.querySelectorAll('.form-error').forEach(error => error.remove());
+        
+        // Validate all fields
+        const fields = [
+            { id: 'firstName', name: 'First Name', required: true },
+            { id: 'lastName', name: 'Last Name', required: true },
+            { id: 'username', name: 'Username', required: true, minLength: 3 },
+            { id: 'email', name: 'Email', required: true, type: 'email' },
+            { id: 'password', name: 'Password', required: true, minLength: 6 },
+            { id: 'confirmPassword', name: 'Confirm Password', required: true }
+        ];
+        
+        fields.forEach(field => {
+            const input = document.getElementById(field.id);
+            const value = input.value.trim();
+            
+            if (field.required && !value) {
+                showFieldError(input, `${field.name} is required`);
+                isValid = false;
+            } else if (field.minLength && value.length < field.minLength) {
+                showFieldError(input, `${field.name} must be at least ${field.minLength} characters`);
+                isValid = false;
+            } else if (field.type === 'email' && !isValidEmail(value)) {
+                showFieldError(input, 'Please enter a valid email address');
+                isValid = false;
+            }
+        });
+        
+        // Check password match
+        if (passwordInput.value !== confirmPasswordInput.value) {
+            showFieldError(confirmPasswordInput, 'Passwords do not match');
+            isValid = false;
+        }
+        
+        // Check terms agreement
+        const agreeTerms = form.querySelector('input[name="agreeTerms"]');
+        if (!agreeTerms.checked) {
+            showFieldError(agreeTerms, 'You must agree to the terms and conditions');
+            isValid = false;
+        }
+        
+        if (!isValid) {
+            e.preventDefault();
+        } else {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Creating Account...';
+        }
+    });
+    
+    function showFieldError(field, message) {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'form-error';
+        errorDiv.textContent = message;
+        field.parentNode.appendChild(errorDiv);
+        field.style.borderColor = '#ef4444';
+    }
+    
+    function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+    
+    function checkPasswordStrength(password) {
+        let score = 0;
+        let feedback = [];
+        
+        if (password.length >= 8) score++;
+        else feedback.push('at least 8 characters');
+        
+        if (/[a-z]/.test(password)) score++;
+        else feedback.push('lowercase letters');
+        
+        if (/[A-Z]/.test(password)) score++;
+        else feedback.push('uppercase letters');
+        
+        if (/[0-9]/.test(password)) score++;
+        else feedback.push('numbers');
+        
+        if (/[^A-Za-z0-9]/.test(password)) score++;
+        else feedback.push('special characters');
+        
+        if (score < 2) {
+            return { class: 'strength-weak', text: 'Weak password' };
+        } else if (score < 3) {
+            return { class: 'strength-fair', text: 'Fair password' };
+        } else if (score < 4) {
+            return { class: 'strength-good', text: 'Good password' };
+        } else {
+            return { class: 'strength-strong', text: 'Strong password' };
+        }
+    }
+    
+    // Remove error styling on input
+    const inputs = form.querySelectorAll('input');
+    inputs.forEach(input => {
+        input.addEventListener('input', function() {
+            this.style.borderColor = '#e5e7eb';
+            const error = this.parentNode.querySelector('.form-error');
+            if (error) {
+                error.remove();
+            }
+        });
+    });
+});
+</script>

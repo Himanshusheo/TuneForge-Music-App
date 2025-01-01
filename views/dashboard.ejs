@@ -1,0 +1,540 @@
+<%- include('layout', { 
+    title: 'Dashboard - TuneForge',
+    bodyClass: 'dashboard-page',
+    additionalHead: '<style>
+            .dashboard-page {
+                background: var(--bg-secondary);
+                min-height: calc(100vh - 70px);
+                padding: 2rem 0;
+            }
+            
+            .dashboard-container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 1rem;
+            }
+            
+            .dashboard-header {
+                margin-bottom: 2rem;
+            }
+            
+            .welcome-message {
+                font-size: 2rem;
+                font-weight: 700;
+                color: var(--text-primary);
+                margin-bottom: 0.5rem;
+            }
+            
+            .welcome-subtitle {
+                color: var(--text-secondary);
+                font-size: 1.125rem;
+            }
+            
+            .dashboard-grid {
+                display: grid;
+                grid-template-columns: 1fr 300px;
+                gap: 2rem;
+                margin-bottom: 2rem;
+            }
+            
+            .main-content {
+                display: flex;
+                flex-direction: column;
+                gap: 2rem;
+            }
+            
+            .sidebar {
+                display: flex;
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            
+            .quick-actions {
+                background: var(--bg-primary);
+                border-radius: var(--radius-lg);
+                padding: 1.5rem;
+                border: 1px solid var(--border-color);
+            }
+            
+            .quick-actions h3 {
+                margin-bottom: 1rem;
+                color: var(--text-primary);
+            }
+            
+            .action-buttons {
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            
+            .action-btn {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                padding: 0.75rem 1rem;
+                background: var(--bg-secondary);
+                border: 1px solid var(--border-color);
+                border-radius: var(--radius-md);
+                color: var(--text-primary);
+                text-decoration: none;
+                transition: var(--transition-fast);
+            }
+            
+            .action-btn:hover {
+                background: var(--primary-color);
+                color: white;
+                border-color: var(--primary-color);
+            }
+            
+            .recent-activity {
+                background: var(--bg-primary);
+                border-radius: var(--radius-lg);
+                padding: 1.5rem;
+                border: 1px solid var(--border-color);
+            }
+            
+            .activity-item {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                padding: 0.75rem 0;
+                border-bottom: 1px solid var(--border-light);
+            }
+            
+            .activity-item:last-child {
+                border-bottom: none;
+            }
+            
+            .activity-icon {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: var(--primary-color);
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.875rem;
+            }
+            
+            .activity-content {
+                flex: 1;
+            }
+            
+            .activity-title {
+                font-weight: 500;
+                color: var(--text-primary);
+                margin-bottom: 0.25rem;
+            }
+            
+            .activity-time {
+                font-size: 0.875rem;
+                color: var(--text-muted);
+            }
+            
+            .stats-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1.5rem;
+                margin-bottom: 2rem;
+            }
+            
+            .stat-card {
+                background: var(--bg-primary);
+                border-radius: var(--radius-lg);
+                padding: 1.5rem;
+                border: 1px solid var(--border-color);
+                text-align: center;
+            }
+            
+            .stat-icon {
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.5rem;
+                margin: 0 auto 1rem;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+                font-weight: 700;
+                color: var(--text-primary);
+                margin-bottom: 0.25rem;
+            }
+            
+            .stat-label {
+                color: var(--text-secondary);
+                font-size: 0.875rem;
+            }
+            
+            .section {
+                background: var(--bg-primary);
+                border-radius: var(--radius-lg);
+                padding: 1.5rem;
+                border: 1px solid var(--border-color);
+            }
+            
+            .section-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 1.5rem;
+            }
+            
+            .section-title {
+                font-size: 1.25rem;
+                font-weight: 600;
+                color: var(--text-primary);
+            }
+            
+            .section-link {
+                color: var(--primary-color);
+                text-decoration: none;
+                font-weight: 500;
+                font-size: 0.875rem;
+            }
+            
+            .section-link:hover {
+                text-decoration: underline;
+            }
+            
+            .songs-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 1rem;
+            }
+            
+            .playlists-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 1rem;
+            }
+            
+            @media (max-width: 768px) {
+                .dashboard-grid {
+                    grid-template-columns: 1fr;
+                }
+                
+                .sidebar {
+                    order: -1;
+                }
+                
+                .stats-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
+        </style>'
+}) %>
+
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1 class="welcome-message">
+            Welcome back, <%= user.firstName %>! 👋
+        </h1>
+        <p class="welcome-subtitle">
+            Ready to discover some amazing music today?
+        </p>
+    </div>
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-music"></i>
+            </div>
+            <div class="stat-number">0</div>
+            <div class="stat-label">Songs Played</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-list"></i>
+            </div>
+            <div class="stat-number">0</div>
+            <div class="stat-label">Playlists Created</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-heart"></i>
+            </div>
+            <div class="stat-number">0</div>
+            <div class="stat-label">Songs Liked</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-number">0h</div>
+            <div class="stat-label">Listening Time</div>
+        </div>
+    </div>
+    
+    <div class="dashboard-grid">
+        <div class="main-content">
+            <!-- Recently Played -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Recently Played</h2>
+                    <a href="/songs" class="section-link">View All</a>
+                </div>
+                <div class="songs-grid" id="recentlyPlayed">
+                    <div class="empty-state">
+                        <i class="fas fa-music"></i>
+                        <p>No recent songs</p>
+                        <a href="/songs" class="btn btn-primary">Discover Music</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Your Playlists -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Your Playlists</h2>
+                    <a href="/playlists" class="section-link">Manage</a>
+                </div>
+                <div class="playlists-grid" id="userPlaylists">
+                    <div class="empty-state">
+                        <i class="fas fa-list"></i>
+                        <p>No playlists yet</p>
+                        <a href="/playlists/create" class="btn btn-primary">Create Playlist</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recommended for You -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Recommended for You</h2>
+                    <a href="/songs?sort=featured" class="section-link">View All</a>
+                </div>
+                <div class="songs-grid" id="recommendedSongs">
+                    <div class="loading-state">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Loading recommendations...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="sidebar">
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <h3>Quick Actions</h3>
+                <div class="action-buttons">
+                    <a href="/songs" class="action-btn">
+                        <i class="fas fa-music"></i>
+                        <span>Browse Music</span>
+                    </a>
+                    <a href="/playlists/create" class="action-btn">
+                        <i class="fas fa-plus"></i>
+                        <span>Create Playlist</span>
+                    </a>
+                    <a href="/playlists/public" class="action-btn">
+                        <i class="fas fa-globe"></i>
+                        <span>Discover Playlists</span>
+                    </a>
+                    <a href="/auth/profile" class="action-btn">
+                        <i class="fas fa-user"></i>
+                        <span>Edit Profile</span>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Recent Activity -->
+            <div class="recent-activity">
+                <h3>Recent Activity</h3>
+                <div id="recentActivity">
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">Account Created</div>
+                            <div class="activity-time">Just now</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadDashboardData();
+    loadUserStats();
+    loadRecentActivity();
+});
+
+async function loadDashboardData() {
+    try {
+        // Load recently played songs
+        const recentResponse = await fetch('/api/user/history?limit=6');
+        if (recentResponse.ok) {
+            const recentData = await recentResponse.json();
+            if (recentData.success && recentData.data.length > 0) {
+                displayRecentlyPlayed(recentData.data);
+            }
+        }
+        
+        // Load user playlists
+        const playlistsResponse = await fetch('/api/playlists');
+        if (playlistsResponse.ok) {
+            const playlistsData = await playlistsResponse.json();
+            if (playlistsData.success && playlistsData.data.length > 0) {
+                displayUserPlaylists(playlistsData.data);
+            }
+        }
+        
+        // Load recommended songs
+        const recommendedResponse = await fetch('/api/songs/featured?limit=6');
+        if (recommendedResponse.ok) {
+            const recommendedData = await recommendedResponse.json();
+            if (recommendedData.success && recommendedData.data.length > 0) {
+                displayRecommendedSongs(recommendedData.data);
+            }
+        }
+    } catch (error) {
+        console.error('Error loading dashboard data:', error);
+    }
+}
+
+function displayRecentlyPlayed(songs) {
+    const container = document.getElementById('recentlyPlayed');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    songs.forEach(song => {
+        const songCard = createSongCard(song);
+        container.appendChild(songCard);
+    });
+}
+
+function displayUserPlaylists(playlists) {
+    const container = document.getElementById('userPlaylists');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    playlists.slice(0, 4).forEach(playlist => {
+        const playlistCard = createPlaylistCard(playlist);
+        container.appendChild(playlistCard);
+    });
+}
+
+function displayRecommendedSongs(songs) {
+    const container = document.getElementById('recommendedSongs');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    songs.forEach(song => {
+        const songCard = createSongCard(song);
+        container.appendChild(songCard);
+    });
+}
+
+function createSongCard(song) {
+    const card = document.createElement('div');
+    card.className = 'song-card';
+    card.innerHTML = `
+        <div class="song-cover">
+            <img src="${song.coverArt || '/images/default-album-cover.png'}" alt="${song.title}">
+            <div class="play-overlay">
+                <button class="play-btn" data-song-id="${song._id}">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+        </div>
+        <div class="song-info">
+            <h4 class="song-title">${song.title}</h4>
+            <p class="song-artist">${song.artist}</p>
+        </div>
+    `;
+    
+    // Add click handler
+    const playBtn = card.querySelector('.play-btn');
+    playBtn.addEventListener('click', () => {
+        if (window.TuneForge && window.TuneForge.playSong) {
+            window.TuneForge.playSong(song._id);
+        }
+    });
+    
+    return card;
+}
+
+function createPlaylistCard(playlist) {
+    const card = document.createElement('div');
+    card.className = 'playlist-card';
+    card.innerHTML = `
+        <div class="playlist-cover">
+            <i class="fas fa-music"></i>
+        </div>
+        <div class="playlist-info">
+            <h4 class="playlist-name">${playlist.name}</h4>
+            <p class="playlist-meta">${playlist.songCount || 0} songs</p>
+        </div>
+    `;
+    
+    card.addEventListener('click', () => {
+        window.location.href = `/playlists/${playlist._id}`;
+    });
+    
+    return card;
+}
+
+async function loadUserStats() {
+    try {
+        const response = await fetch('/api/user/profile');
+        if (response.ok) {
+            const data = await response.json();
+            if (data.success) {
+                const user = data.data;
+                
+                // Update stats (these would come from actual user data)
+                const stats = {
+                    songsPlayed: user.listeningHistory ? user.listeningHistory.length : 0,
+                    playlistsCreated: user.playlists ? user.playlists.length : 0,
+                    songsLiked: user.favoriteSongs ? user.favoriteSongs.length : 0,
+                    listeningTime: calculateListeningTime(user.listeningHistory || [])
+                };
+                
+                updateStatsDisplay(stats);
+            }
+        }
+    } catch (error) {
+        console.error('Error loading user stats:', error);
+    }
+}
+
+function updateStatsDisplay(stats) {
+    const statNumbers = document.querySelectorAll('.stat-number');
+    if (statNumbers.length >= 4) {
+        statNumbers[0].textContent = stats.songsPlayed;
+        statNumbers[1].textContent = stats.playlistsCreated;
+        statNumbers[2].textContent = stats.songsLiked;
+        statNumbers[3].textContent = stats.listeningTime;
+    }
+}
+
+function calculateListeningTime(history) {
+    const totalSeconds = history.reduce((total, item) => {
+        return total + (item.duration || 0);
+    }, 0);
+    
+    const hours = Math.floor(totalSeconds / 3600);
+    return hours > 0 ? `${hours}h` : `${Math.floor(totalSeconds / 60)}m`;
+}
+
+function loadRecentActivity() {
+    // This would load actual recent activity from the API
+    // For now, we'll just show the account creation
+}
+</script>

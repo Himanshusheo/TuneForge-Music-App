@@ -1,0 +1,379 @@
+<%- include('../../layout', { 
+    title: 'Admin Dashboard - TuneForge',
+    bodyClass: 'admin-page',
+    additionalHead: '<style>
+            .admin-page {
+                background: var(--bg-secondary);
+                min-height: calc(100vh - 70px);
+                padding: 2rem 0;
+            }
+            
+            .admin-container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 1rem;
+            }
+            
+            .admin-header {
+                margin-bottom: 2rem;
+            }
+            
+            .admin-title {
+                font-size: 2rem;
+                font-weight: 700;
+                color: var(--text-primary);
+                margin-bottom: 0.5rem;
+            }
+            
+            .admin-subtitle {
+                color: var(--text-secondary);
+                font-size: 1.125rem;
+            }
+            
+            .stats-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1.5rem;
+                margin-bottom: 2rem;
+            }
+            
+            .stat-card {
+                background: var(--bg-primary);
+                border-radius: var(--radius-lg);
+                padding: 1.5rem;
+                border: 1px solid var(--border-color);
+                text-align: center;
+            }
+            
+            .stat-icon {
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.5rem;
+                margin: 0 auto 1rem;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+                font-weight: 700;
+                color: var(--text-primary);
+                margin-bottom: 0.25rem;
+            }
+            
+            .stat-label {
+                color: var(--text-secondary);
+                font-size: 0.875rem;
+            }
+            
+            .admin-grid {
+                display: grid;
+                grid-template-columns: 2fr 1fr;
+                gap: 2rem;
+                margin-bottom: 2rem;
+            }
+            
+            .admin-section {
+                background: var(--bg-primary);
+                border-radius: var(--radius-lg);
+                padding: 1.5rem;
+                border: 1px solid var(--border-color);
+            }
+            
+            .section-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 1.5rem;
+            }
+            
+            .section-title {
+                font-size: 1.25rem;
+                font-weight: 600;
+                color: var(--text-primary);
+            }
+            
+            .section-link {
+                color: var(--primary-color);
+                text-decoration: none;
+                font-weight: 500;
+                font-size: 0.875rem;
+            }
+            
+            .section-link:hover {
+                text-decoration: underline;
+            }
+            
+            .recent-item {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                padding: 0.75rem 0;
+                border-bottom: 1px solid var(--border-light);
+            }
+            
+            .recent-item:last-child {
+                border-bottom: none;
+            }
+            
+            .recent-avatar {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: var(--primary-color);
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.875rem;
+            }
+            
+            .recent-content {
+                flex: 1;
+            }
+            
+            .recent-title {
+                font-weight: 500;
+                color: var(--text-primary);
+                margin-bottom: 0.25rem;
+            }
+            
+            .recent-time {
+                font-size: 0.875rem;
+                color: var(--text-muted);
+            }
+            
+            .genre-stats {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .genre-item {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0.5rem 0;
+            }
+            
+            .genre-name {
+                font-weight: 500;
+                color: var(--text-primary);
+                text-transform: capitalize;
+            }
+            
+            .genre-count {
+                color: var(--text-secondary);
+                font-size: 0.875rem;
+            }
+            
+            .admin-actions {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1rem;
+                margin-top: 2rem;
+            }
+            
+            .admin-action-card {
+                background: var(--bg-primary);
+                border-radius: var(--radius-lg);
+                padding: 1.5rem;
+                border: 1px solid var(--border-color);
+                text-align: center;
+                transition: var(--transition);
+                cursor: pointer;
+            }
+            
+            .admin-action-card:hover {
+                transform: translateY(-2px);
+                box-shadow: var(--shadow-md);
+            }
+            
+            .admin-action-icon {
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.5rem;
+                margin: 0 auto 1rem;
+            }
+            
+            .admin-action-title {
+                font-weight: 600;
+                color: var(--text-primary);
+                margin-bottom: 0.5rem;
+            }
+            
+            .admin-action-description {
+                color: var(--text-secondary);
+                font-size: 0.875rem;
+            }
+            
+            @media (max-width: 768px) {
+                .admin-grid {
+                    grid-template-columns: 1fr;
+                }
+                
+                .stats-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+                
+                .admin-actions {
+                    grid-template-columns: 1fr;
+                }
+            }
+        </style>'
+}) %>
+
+<div class="admin-container">
+    <div class="admin-header">
+        <h1 class="admin-title">Admin Dashboard</h1>
+        <p class="admin-subtitle">Manage your TuneForge platform</p>
+    </div>
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-number"><%= stats.totalUsers %></div>
+            <div class="stat-label">Total Users</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-music"></i>
+            </div>
+            <div class="stat-number"><%= stats.totalSongs %></div>
+            <div class="stat-label">Total Songs</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-list"></i>
+            </div>
+            <div class="stat-number"><%= stats.totalPlaylists %></div>
+            <div class="stat-label">Total Playlists</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-crown"></i>
+            </div>
+            <div class="stat-number"><%= stats.premiumUsers %></div>
+            <div class="stat-label">Premium Users</div>
+        </div>
+    </div>
+    
+    <div class="admin-grid">
+        <div class="admin-section">
+            <div class="section-header">
+                <h2 class="section-title">Recent Songs</h2>
+                <a href="/admin/songs" class="section-link">View All</a>
+            </div>
+            <div id="recentSongs">
+                <% if (typeof recentSongs !== 'undefined' && recentSongs.length > 0) { %>
+                    <% recentSongs.forEach(function(song) { %>
+                        <div class="recent-item">
+                            <div class="recent-avatar">
+                                <i class="fas fa-music"></i>
+                            </div>
+                            <div class="recent-content">
+                                <div class="recent-title"><%= song.title %> - <%= song.artist %></div>
+                                <div class="recent-time">Uploaded by <%= song.uploadedBy.username %></div>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <p class="text-center text-muted">No recent songs</p>
+                <% } %>
+            </div>
+        </div>
+        
+        <div class="admin-section">
+            <div class="section-header">
+                <h2 class="section-title">Genre Distribution</h2>
+            </div>
+            <div class="genre-stats">
+                <% if (typeof genreStats !== 'undefined' && genreStats.length > 0) { %>
+                    <% genreStats.forEach(function(genre) { %>
+                        <div class="genre-item">
+                            <span class="genre-name"><%= genre._id %></span>
+                            <span class="genre-count"><%= genre.count %> songs</span>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <p class="text-center text-muted">No genre data available</p>
+                <% } %>
+            </div>
+        </div>
+    </div>
+    
+    <div class="admin-actions">
+        <div class="admin-action-card" onclick="window.location.href='/admin/songs'">
+            <div class="admin-action-icon">
+                <i class="fas fa-music"></i>
+            </div>
+            <h3 class="admin-action-title">Manage Songs</h3>
+            <p class="admin-action-description">Upload, edit, and manage all songs in your library</p>
+        </div>
+        
+        <div class="admin-action-card" onclick="window.location.href='/admin/users'">
+            <div class="admin-action-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <h3 class="admin-action-title">Manage Users</h3>
+            <p class="admin-action-description">View and manage user accounts and permissions</p>
+        </div>
+        
+        <div class="admin-action-card" onclick="window.location.href='/admin/songs/upload'">
+            <div class="admin-action-icon">
+                <i class="fas fa-upload"></i>
+            </div>
+            <h3 class="admin-action-title">Upload Songs</h3>
+            <p class="admin-action-description">Add new songs to your music library</p>
+        </div>
+        
+        <div class="admin-action-card" onclick="window.location.href='/admin/analytics'">
+            <div class="admin-action-icon">
+                <i class="fas fa-chart-bar"></i>
+            </div>
+            <h3 class="admin-action-title">Analytics</h3>
+            <p class="admin-action-description">View detailed analytics and reports</p>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add click handlers for admin action cards
+    document.querySelectorAll('.admin-action-card').forEach(card => {
+        card.addEventListener('click', function() {
+            const url = this.getAttribute('onclick').match(/window\.location\.href='([^']+)'/);
+            if (url) {
+                window.location.href = url[1];
+            }
+        });
+    });
+    
+    // Load additional data if needed
+    loadAdminData();
+});
+
+async function loadAdminData() {
+    try {
+        // Load recent activity, top songs, etc.
+        console.log('Loading admin data...');
+    } catch (error) {
+        console.error('Error loading admin data:', error);
+    }
+}
+</script>
