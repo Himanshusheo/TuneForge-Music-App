@@ -124,6 +124,7 @@ app.use((req, res) => {
 app.listen(PORT, () => {
   console.log(`🎵 TuneForge server running on http://localhost:${PORT}`);
   console.log(`📁 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`⏰ Server started at ${new Date().toLocaleString()}`);
 });
 
 module.exports = app;
