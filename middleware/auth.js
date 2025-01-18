@@ -4,6 +4,8 @@ const requireAuth = (req, res, next) => {
     return next();
   } else {
     req.flash('error', 'Please log in to access this page');
+    // Store the original URL for redirect after login
+    req.session.returnTo = req.originalUrl;
     return res.redirect('/auth/login');
   }
 };
