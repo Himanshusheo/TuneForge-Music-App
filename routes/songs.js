@@ -63,6 +63,7 @@ router.get('/', async (req, res) => {
     }
     
     // Check premium access for premium songs
+    // Filter out premium songs for non-premium users
     if (!res.locals.isPremium) {
       filters.isPremium = { $ne: true };
     }
