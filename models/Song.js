@@ -132,6 +132,13 @@ songSchema.virtual('dislikeCount').get(function() {
   return this.dislikes.length;
 });
 
+// Virtual for formatted duration (MM:SS)
+songSchema.virtual('formattedDuration').get(function() {
+  const minutes = Math.floor(this.duration / 60);
+  const seconds = this.duration % 60;
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+});
+
 // Method to increment play count
 songSchema.methods.incrementPlayCount = function() {
   this.playCount += 1;
